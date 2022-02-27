@@ -35,6 +35,7 @@ headers = {
 
 
 def main_handler(event, context):
+    sendtext=''
     rsp = requests.post(f'{host}/hk4e_cg_cn/gamer/api/login', headers=headers)
     logging.debug(f"Login->{rsp.text}")
     rsp = requests.get(f'{host}/hk4e_cg_cn/wallet/wallet/get', headers=headers)
@@ -43,13 +44,13 @@ def main_handler(event, context):
     total_time = rsp.json()['data']['total_time']
     logging.debug(f"Wallet->{rsp.json()}")
     logging.info(f"米云币:{coins['coin_num']},免费时长:{free_times['free_time']}分钟,总时长:{total_time}分钟")
-    sendtext=f"米云币:{coins['coin_num']},免费时长:{free_times['free_time']}分钟,总时长:{total_time}分钟"
+    #sendtext=f"米云币:{coins['coin_num']},免费时长:{free_times['free_time']}分钟,总时长:{total_time}分钟"
     rsp = requests.get(f'{host}/hk4e_cg_cn/gamer/api/listNotifications?status=NotificationStatusUnread'
                        f'&type=NotificationTypePopup&is_sort=true', headers=headers)
     logging.debug(f"ListNotifications->{rsp.text}")
     rewards = rsp.json()['data']['list']
     logging.info(f"总共有{len(rewards)}个奖励待领取。")
-    sendtext=sendtext+"\r\n"+f"总共有{len(rewards)}个奖励待领取。"
+    sendtext+="\r\n"+f"总共有{len(rewards)}个奖励待领取。"
 
     for reward in rewards:
         reward_id = reward['id']
@@ -60,7 +61,7 @@ def main_handler(event, context):
                             },
                             headers=headers)
         logging.info(f"领取奖励,ID:{reward_id},Msg:{reward_msg}")
-        sendtext=sendtext+"\r\n"+f"领取奖励,ID:{reward_id},Msg:{reward_msg}"
+        sendtext+="\r\n"+f"领取奖励,ID:{reward_id},Msg:{reward_msg}"
         logging.debug(f"AckNotification->{rsp.text}")
 
     rsp = requests.get(f'{host}/hk4e_cg_cn/wallet/wallet/get', headers=headers)
@@ -69,7 +70,7 @@ def main_handler(event, context):
     total_time = rsp.json()['data']['total_time']
     logging.debug(f"Wallet->{rsp.json()}")
     logging.info(f"米云币:{coins['coin_num']},免费时长:{free_times['free_time']}分钟,总时长:{total_time}分钟")
-    sendtext=sendtext+"\r\n"+f"米云币:{coins['coin_num']},免费时长:{free_times['free_time']}分钟,总时长:{total_time}分钟"
+    sendtext+="\r\n"+f"米云币:{coins['coin_num']},免费时长:{free_times['free_time']}分钟,总时长:{total_time}分钟"
     logging.debug("处理成功")
     if usetgbot:
         send(sendtext)
