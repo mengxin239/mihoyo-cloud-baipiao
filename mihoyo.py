@@ -9,7 +9,7 @@ device_id = ''  # 抓包 header中的x-rpc-device_id
 device_name='' #抓包 header中的x-rpc-device_name
 device_model='' #抓包 header中的x-rpc-device_model
 app_id = '1953439974'
-usetgbot=True #是否使用Telegram机器人
+usetgbot=False #是否使用Telegram机器人
 bottoken='' #botfather发的token
 chat_id='' #你的chat_id
 
